@@ -1,20 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar'
+import { Button, StyleSheet, Text, View, SafeAreaView } from 'react-native'
+import Home from './screens/Home.js'
+import Constant from 'expo-constants'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { theme } from './constants/theme'
+import AddDiary from './screens/AddDiary.js'
+
+const Stack = createNativeStackNavigator()
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <SafeAreaView style={styles.safeContainer}>
+      <View style={styles.container}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name='Diary'
+              component={Home}
+              options={{
+                title: 'Diary',
+                headerStyle: {
+                  backgroundColor: theme.primary_color,
+                },
+              }}
+            />
+            <Stack.Screen
+              name='AddDiary'
+              component={AddDiary}
+              options={{
+                title: 'Add Diary',
+                headerStyle: {
+                  backgroundColor: theme.primary_color,
+                },
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: '#E1D5E7',
+    marginTop: Constant.statusBarHeight,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-});
+})
