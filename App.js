@@ -26,10 +26,11 @@ export default function App() {
               }}
             />
             <Stack.Screen
+              screenOptions={{ presentation: 'modal' }}
               name='AddDiary'
               component={AddDiary}
               options={{
-                title: 'Add Diary',
+                title: 'Add a Diary',
                 headerStyle: {
                   backgroundColor: theme.primary_color,
                 },

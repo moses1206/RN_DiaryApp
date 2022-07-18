@@ -1,30 +1,53 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from 'react-native'
+import React, { useState, useEffect } from 'react'
 import CustomButton from '../components/CustomButton'
 import { theme } from '../constants/theme'
 import Listitem from '../components/Listitem'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default function Home(props) {
+export default function Home({ navigation }) {
+  const [refreshing, setRefreshing] = useState(false)
+  const [diaries, setDiaries] = useState([])
+
+  const onRefresh = async () => {
+    setRefreshing(true)
+    const diaries = await AsyncStorage.getItem('diaries')
+    setDiaries({ diaries: JSON.parse(diaries) })
+    setRefreshing(false)
+  }
+
+  console.log(diaries)
+
   return (
     <View style={styles.home}>
-      {/* <View style={styles.placehodler_container}>
-        <Text style={styles.placeholder}>No Diaryies Yet!</Text>
-      </View> */}
-      <View style={styles.body}>
-        <Listitem
-          title='Day to Remember'
-          subTitle='20/3/2021'
-          style={{ borderTopWidth: 1 }}
-        />
-        <Listitem title='Lake Day' subTitle='20/3/2021' />
-        <Listitem title='My BirthDay' subTitle='20/3/2021' />
-      </View>
+      <ScrollView
+        style={styles.body}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {diaries.length
+          ? diaries.map((diary) => {
+              return (
+                <Listitem
+                  title={diary.title}
+                  subTitle='20/3/2021'
+                  style={{ borderTopWidth: 1 }}
+                />
+              )
+            })
+          : null}
+      </ScrollView>
       <CustomButton
-        title='Add a New Day'
+        title='Add a Diary'
         style={{ backgroundColor: theme.primary_color }}
-        onPress={() => {
-          props.navigation.navigate('Add Diary')
-        }}
+        onPress={() => navigation.navigate('AddDiary')}
       />
     </View>
   )
@@ -33,6 +56,7 @@ export default function Home(props) {
 const styles = StyleSheet.create({
   home: { flex: 1 },
   placehodler_container: {
+    marginTop: 20,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
